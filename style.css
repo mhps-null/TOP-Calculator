@@ -8,6 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #1e1e1e;
 }
 
 .calculator {
@@ -15,7 +16,7 @@ body {
     padding: 5px;
     background-color: #f5f5f5;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.6), 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 3px rgb(0, 153, 255), 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .display {
