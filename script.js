@@ -2,6 +2,8 @@ let firstNumber = null;
 let secondNumber = null;
 let operator = null;
 let shouldResetDisplay = false;
+let displayExpression = '';
+let isTypingSecondNumber = false;
 
 function add(a, b) {
     return a + b;
@@ -24,7 +26,7 @@ function operate(op, a, b) {
     switch (op) {
         case '+': return add(a, b);
         case '-': return subtract(a, b);
-        case '*': return multiply(a, b);
+        case 'x': return multiply(a, b);
         case '/': return divide(a, b);
         default: return null;
     }
@@ -40,11 +42,16 @@ const percentageButton = document.querySelector('[data-action="percentage"]');
 const deleteButton = document.querySelector('[data-action="delete"]');
 
 function appendNumber(num) {
-    if (display.textContent === '0' || shouldResetDisplay) {
-        display.textContent = num;
+    if (shouldResetDisplay) {
+        display.textContent = `${displayExpression} ${num}`;
         shouldResetDisplay = false;
-    } else {
+    } else if (isTypingSecondNumber) {
         display.textContent += num;
+    } else {
+        display.textContent =
+            display.textContent === '0'
+                ? num
+                : display.textContent + num;
     }
 }
 
@@ -53,10 +60,18 @@ numberButtons.forEach(btn =>
 );
 
 function setOperator(op) {
-    if (operator !== null) evaluate();
+    if (operator !== null && !shouldResetDisplay) {
+        evaluate();
+    }
+
     firstNumber = Number(display.textContent);
     operator = op;
+
+    displayExpression = `${firstNumber} ${op}`;
+    display.textContent = displayExpression;
+
     shouldResetDisplay = true;
+    isTypingSecondNumber = true;
 }
 
 operatorButtons.forEach(btn =>
@@ -70,7 +85,9 @@ function roundResult(num, digits = 4) {
 function evaluate() {
     if (operator === null || shouldResetDisplay) return;
 
-    secondNumber = Number(display.textContent);
+    const parts = display.textContent.split(' ');
+    secondNumber = Number(parts[parts.length - 1]);
+
     const result = operate(operator, firstNumber, secondNumber);
 
     display.textContent =
@@ -79,7 +96,9 @@ function evaluate() {
             : roundResult(result, 4);
 
     operator = null;
+    displayExpression = '';
     shouldResetDisplay = true;
+    isTypingSecondNumber = false;
 }
 
 equalsButton.addEventListener('click', evaluate);
@@ -89,7 +108,9 @@ function clearAll() {
     firstNumber = null;
     secondNumber = null;
     operator = null;
+    displayExpression = '';
     shouldResetDisplay = false;
+    isTypingSecondNumber = false;
 }
 
 clearButton.addEventListener('click', clearAll);
